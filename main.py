@@ -1,15 +1,17 @@
+import configparser
 import os
 from generateFile import FileGenerator
 from ftplib import FTP
 import csv
 
-print('welcome to eBilling!')
+config = configparser.ConfigParser()
+config.read('config.ini')
 
 #connect to ftp
-ftp = FTP('ftp.haraldmueller.ch', 'schoolerinvoices', 'Berufsschule8005!')
-ftp.cwd('out/AP18cBotta')
+ftp = FTP(config['FTP1']['server'], config['FTP1']['user'], config['FTP1']['pw'])
+ftp.cwd(config['FTP1']['ftpPath'])
 invoiceData = ''
-path = 'C:\\Users\\nicol\\git\\M122_LB02_Botta\\billData'
+path = config['LOCALPATHS']['downloadPath']
 
 #get .data file at position 0
 filesineed = [filename for filename in ftp.nlst() if '.data' in filename]
@@ -18,7 +20,7 @@ if len(filesineed) > 0:
     invoiceData = invoiceData+ path+ '\\' + filesineed[0]
     #ftp.delete(filesineed[0])
 ftp.quit()
-print('file has been downloaded!')
+print('Rechnungsdatei wurde heruntergeladen')
 
 #separate csv
 def getInvoiceData():
@@ -26,35 +28,33 @@ def getInvoiceData():
         rows = list(csv.reader(csvFile, delimiter=';'))
         csvFile.close()
         if len(rows) < 4:
-            print('CSV file is corrupted')
+            print('CSV Datei ist beschädigt')
         else:
             name = rows[0][0].split('_')
             if 'Rechnung' not in name[0] or len(rows[0]) != 6:
-                print('Invoice number missing')
+                print('Rechnungsnummer fehlt')
             elif 'Herkunft' not in rows[1][0] or len(rows[1]) != 8:
-                print('Origin undefined or corrupted')
+                print('Herkunft fehlt')
             elif 'Endkunde' not in rows[2][0] or len(rows[2]) != 5:
-                print('Receiver missing or corrupted')
+                print('Endkunde fehlt')
             elif 'RechnPos' not in rows[3][0] or len(rows[3]) != 7:
-                print('Invoice line item missing or corrupted')
+                print('Rechenposition fehlt')
             else:
                 for i in rows:
                     if i[0] == 'RechnPos' and len(i) != 7:
-                        print('Invoice line item missing or corrupted')
+                        print('Rechenposition fehlt')
                 return rows
 
 rows = getInvoiceData()
 FileGenerator(rows)
 
-ftp2 = FTP('134.119.225.245', '310721-297-zahlsystem', 'Berufsschule8005!')
-ftp2.cwd('in/AP18cBotta')
-path = 'C:\\Users\\nicol\\git\\M122_LB02_Botta\\bills'
+ftp2 = FTP(config['FTP2']['server'], config['FTP2']['user'], config['FTP2']['pw'])
+ftp2.cwd(config['FTP2']['ftpPath'])
+path = config['LOCALPATHS']['uploadPath']
 files = os.listdir(path)
 for file in files :
     with open(path +'\\'+ file, "rb") as file1 :
         newPath = path + '\\' + file
         ftp2.storbinary('STOR ' + file, file1)
         file1.close()
-    #os.remove(newPath)
 ftp2.quit()
-#os.remove('C:\\Users\\ayesh\\git\\M122_LB2_Huber\\' + invoiceData)

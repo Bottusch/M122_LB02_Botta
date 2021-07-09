@@ -21,33 +21,33 @@ class Row4:
 
     def __billPosNo (self) :
         if len(self.__line[1]) < 1 :
-            print('error! No bill number position provided')
+            print('Fehler, Rechnungspositionsnummer fehlt')
         return self.__line[1]
 
     def __billPosDesc (self) :
         if len(self.__line[2]) < 1 :
-            print('error! No bill number position provided')
+            print('Fehler, Rechnungspositionsbezeichnung fehlt')
         return self.__line[2]
 
     def __quantity (self) :
         if len(self.__line[3]) < 1 :
-            print('error! No quantity provided')
+            print('Fehler, Anzahl/Menge fehlt')
         return self.__line[3]
 
     def __itemPrice (self) :
         if not '%.2f' %float(self.__line[4]) == self.__line[4] :
-            print('error! Incorrect price per item format')
+            print('Fehler, Preis pro Stück ist falsch formatiert')
         return self.__line[4]
 
     def __totalPrice (self) :
         calculatedPrice = float(self.__quantity()) * float(self.__itemPrice())
         if not '%.2f' %float(self.__line[5]) == self.__line[5] :
-            print('error! Incorrect price per item format')
+            print('Fehler, Preis pro Stück ist falsch formatiert')
         elif not '%.2f' % calculatedPrice == self.__line[5]:
-            print('error! caluclated price is incorrect!')
+            print('Fehler, der berechnete Preis stimmt nicht')
         return self.__line[5]
 
     def __mwst (self) :
         if not re.match('MWST_\d{1}\.\d{2}\%', self.__line[6]) :
-            print('error! check MWST')
+            print('Fehler, MwSt ist fehlerhaft')
         return self.__line[6].split('_')[1]

@@ -5,6 +5,10 @@ from helper import totalPriceTxtWthSpc
 from row1 import Row1
 from row2 import Row2
 from row3 import Row3
+import configparser
+
+config = configparser.ConfigParser()
+config.read('config.ini')
 
 class FileGenerator() :
     def __init__(self, lines) -> None :
@@ -56,12 +60,12 @@ class FileGenerator() :
         txt[63] = l3.address
         txt[64] = l3.zip
         try:
-            with open('C:\\Users\\nicol\\git\\M122_LB02_Botta\\bills\\'+ fileName, 'w', encoding='utf-8') as file:
+            with open(config['LOCALPATHS']['uploadPath'] + '\\'+ fileName, 'w', encoding='utf-8') as file:
                 file.write('\n'.join(txt))
                 file.close()
-            print('TXT file has been created!')
+            print('TXT Rechnung wurde erstellt')
         except:
-            print('TXT file has failed.')
+            print('TXT Rechnung konnte nicht erstellt werden')
 
     def __openXmlFile(self) :
         with open('invoice.xml') as file :
@@ -99,11 +103,11 @@ class FileGenerator() :
             l1.dueDateStamp
         )
         try:
-            with open('C:\\Users\\nicol\\git\\M122_LB02_Botta\\bills\\'+ fileName, 'w', encoding='utf-8') as file:
+            with open(config['LOCALPATHS']['uploadPath'] + '\\'+ fileName, 'w', encoding='utf-8') as file:
                 file.write(xmlFile)
                 file.close()
-            print('XML file has been created!')
+            print('XML Rechnung wurde erstellt')
         except:
-            print('XML file has failed.')
+            print('XML Rechnung konnte nicht erstellt werden')
 
     

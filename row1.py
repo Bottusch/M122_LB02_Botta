@@ -25,32 +25,32 @@ class Row1:
 
     def __invoiceNr(self) :
         if not re.match('Rechnung_\d{5}', self.__line[0]) :
-            print('error! orderNr has incorrect format')
+            print('Fehler, Rechnungsnummer fehlt')
         return self.__line[0].split('_')[1]
 
     def __orderNr (self) :
         if not re.match('Auftrag_A\d{3}', self.__line[1]) :
-            print('error! orderNr has incorrect format')
+            print('Fehler, Auftragsnummer ist falsch formatiert')
         return self.__line[1]
 
     def __city (self) :
         if len(self.__line[2]) < 1 :
-            print('error! No city provided')
+            print('Fehler, Ortschaft fehlt')
         return self.__line[2]
 
     def __date (self) :
         if not re.match('\d{2}\.\d{2}\.\d{4}', self.__line[3]) :
-            print('error! Date has incorrect format')
+            print('Fehler, Rechnungsdatum ist falsch formatiert')
         return self.__line[3]
 
     def __time (self) :
         if not re.match('\d{2}\:\d{2}\:\d{2}', self.__line[4]) :
-            print('error! wrong time format!')
+            print('Fehler, Rechnungszeit ist falsch formatiert')
         return self.__line[4]
 
     def __daysTillPay (self) :
         if not re.match('ZahlungszielInTagen_\d{2}', self.__line[5]) :
-            print('error! Days until Pay is incorrect format!')
+            print('Fehler, Zahlungsziel ist falsch formatiert')
         numberOfDays = self.__line[5].split('_')
         return numberOfDays[1]
 
