@@ -7,13 +7,11 @@ import csv
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-#connect to ftp
 ftp = FTP(config['FTP1']['server'], config['FTP1']['user'], config['FTP1']['pw'])
 ftp.cwd(config['FTP1']['ftpPath'])
 invoiceData = ''
 path = config['LOCALPATHS']['downloadPath']
 
-#get .data file at position 0
 filesineed = [filename for filename in ftp.nlst() if '.data' in filename]
 if len(filesineed) > 0:
     ftp.retrbinary("RETR " + filesineed[0], open(path+'\\'+filesineed[0], 'wb').write)
@@ -22,7 +20,7 @@ if len(filesineed) > 0:
 ftp.quit()
 print('Rechnungsdatei wurde heruntergeladen')
 
-#separate csv
+
 def getInvoiceData():
     with open(invoiceData, 'r', encoding="utf-8") as csvFile:
         rows = list(csv.reader(csvFile, delimiter=';'))
